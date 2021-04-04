@@ -1,26 +1,39 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react"
+import "./App.css"
+import firebase from "./lib/firebase"
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  const [pushToken, setPushToken] = useState("")
+  useEffect(() => {
+    const messaging = firebase.messaging()
+
+    messaging
+      .getToken({
+        vapidKey:
+          "BL9iTyUrNkxK0wZIBGD8IxoVqnxp8iPWGF3Qq9_0Wa2Q357TdlWYd8UqUdmWPNtm1cNTVVXUcWkoP2mQB8uNPBU"
+      })
+      .then((currentToken) => {
+        if (currentToken) {
+          console.log(currentToken)
+
+          setPushToken(currentToken)
+          // Send the token to your server and update the UI if necessary
+          // ...
+        } else {
+          // Show permission request UI
+          console.log(
+            "No registration token available. Request permission to generate one."
+          )
+          // ...
+        }
+      })
+      .catch((err) => {
+        console.log("An error occurred while retrieving token. ", err)
+        // ...
+      })
+  }, [])
+
+  return <div className="App">Push token: {pushToken}</div>
 }
 
-export default App;
+export default App
