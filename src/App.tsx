@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
 import "./App.css"
 import firebase from "./lib/firebase"
+import UserRepository from "./repository/UserRepository"
 
 function App() {
   const [pushToken, setPushToken] = useState("")
@@ -33,6 +34,15 @@ function App() {
       })
   }, [])
 
+  useEffect(() => {
+    UserRepository.findAll()
+      .then((doc) => {
+        console.log(doc.docs[0].data())
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  }, [])
   return <div className="App">Push token: {pushToken}</div>
 }
 
